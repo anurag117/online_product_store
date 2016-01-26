@@ -1,11 +1,11 @@
-class UsersController < ActionController::API
+class UsersController < ApiController
 
   def signup
     user = User.new(user_params)
     if user.save
-      render json: {:status => true, :debug_message => "request acknowledged successfully"}, :status => 200
+      render json: {:status => true, :message => "Signup successful"}, :status => 200
     else
-      render json: {:status => false, :debug_message => "#{user.errors.full_messages}"}, :status => 422
+      render json: {:status => false, :message => "#{user.errors.full_messages}"}, :status => 422
     end
   end
 

@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
   resources :products
-  resources :users
+
+  get "/log_out", to: "sessions#logout"
+  post "/log_in", to: "sessions#login"
+  post "/sign_up", to: "users#signup"
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
