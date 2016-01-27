@@ -1,28 +1,183 @@
-== README
+RESTful API for an online store for managing products after authentication.
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+This RoR app has been deployed at https://stormy-fjord-11469.herokuapp.com and tested via postman(chrome extension). Below are the APIs with request/response:
 
 
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+Post: https://stormy-fjord-11469.herokuapp.com/sign_up
+
+  headers:
+  Content-Type   application/json
+
+  input params: 
+  {"user": {"email_id": "anu1@gmail.com", "password": "anurag1", "password_confirmation": "anurag1"}}
+
+  output:
+  {
+    "status": true,
+    "message": "Signup successful"
+  }
+
+
+
+Post: https://stormy-fjord-11469.herokuapp.com/log_in
+
+  headers:
+  Content-Type   application/json
+
+  input params:
+  {"email_id": "anu1@gmail.com", "password": "anurag1"}
+
+  output:
+  {
+    "status": true,
+    "data": {
+      "user_email_id": "anu1@gmail.com",
+      "user_access_token": "6b7e4a8e24ae37a640aef7e24cd25b4c"
+    },
+    "message": "user logged in successfully"
+  }
+
+
+
+Post: https://stormy-fjord-11469.herokuapp.com/products
+
+  headers:
+  Content-Type   application/json
+  Authorization  Token token="6b7e4a8e24ae37a640aef7e24cd25b4c"
+
+  input params:
+  {"product": {"title": "title1", "description": "description1"}}
+
+  output:
+    {
+    "product": {
+      "id": 1,
+      "title": "title1",
+      "description": "description1"
+    }
+  }
+
+
+
+(after adding 1 more product)
+Get: https://stormy-fjord-11469.herokuapp.com/products
+
+  headers:
+  Content-Type   application/json
+  Authorization  Token token="6b7e4a8e24ae37a640aef7e24cd25b4c"
+
+  output:
+  {
+    "products": [
+      {
+        "id": 1,
+        "title": "title1",
+        "description": "description1"
+      },
+      {
+        "id": 2,
+        "title": "title2",
+        "description": "description2"
+      }
+    ]
+  }
+
+
+Get: https://stormy-fjord-11469.herokuapp.com/products/1/edit (or https://stormy-fjord-11469.herokuapp.com/products/1)
+
+  headers:
+  Content-Type   application/json
+  Authorization  Token token="6b7e4a8e24ae37a640aef7e24cd25b4c"
+
+  output:
+  {
+    "product": {
+      "id": 1,
+      "title": "title1",
+      "description": "description1"
+    }
+  }
+
+
+
+Put: https://stormy-fjord-11469.herokuapp.com/products/1
+
+  headers:
+  Content-Type   application/json
+  Authorization  Token token="6b7e4a8e24ae37a640aef7e24cd25b4c"
+
+  input params:
+  {"product": {"title": "title1", "description": "changed description"}}
+
+  output:
+  {
+    "product": {
+      "id": 1,
+      "title": "title1",
+      "description": "changed description"
+    }
+  }
+
+
+Delete: https://stormy-fjord-11469.herokuapp.com/products/1
+
+  headers:
+  Content-Type   application/json
+  Authorization  Token token="6b7e4a8e24ae37a640aef7e24cd25b4c"
+
+  output status:  204 No Content
+
+
+
+Get: https://stormy-fjord-11469.herokuapp.com/log_out
+
+  headers:
+  Content-Type   application/json
+  Authorization  Token token="6b7e4a8e24ae37a640aef7e24cd25b4c"
+
+  output:
+  {
+    "status": true,
+    "message": "User logged out successfully"
+  }
+
+
+
+Get: https://stormy-fjord-11469.herokuapp.com/products
+
+  headers:
+  Content-Type   application/json
+  Authorization  Token token="6b7e4a8e24ae37a640aef7e24cd25b4c"
+
+  output:
+  {
+    "status": false,
+    "message": "Please login again to continue"
+  }
+
+
+
+App model and design:
+
+Basically, there are following two models:
+
+  User(id: integer, email_id: string, password_digest: string, access_token: string)
+
+  Product(id: integer, title: string, description: text)
+
+
+and the following APIs:
+
+sign_up api creates a new user if email_id is unique and password and confirmation match.
+
+log_in api authenticates user email_id and password and generates a random access token for the user and returns it in output.
+
+all product CRUD apis require "authenticate_user" which checks for access token in request headers and finds user corresponding to that header and sets current_user.
+
+log_out api checks for access token in request headers and deletes the token for the corresponding user. 
+
+
+
+
+
+
